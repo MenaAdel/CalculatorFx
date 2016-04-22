@@ -6,27 +6,27 @@ import java.util.StringTokenizer;
 public class Infix {
 	
 	public double infix(String expression)
-	    {
-	        expression=expression.replaceAll("[\t\n ]", "")+"=";
-	        expression=brackets(expression);
-	        if(expression.startsWith("-"))
-	        	expression="0"+expression;
-	        String operator="*/+-=";
-	        StringTokenizer tokenizer=new StringTokenizer(expression, operator, true);
-	        Stack<String> operatorStack=new Stack<String>();
-	        Stack<String> valueStack=new Stack<String>();
-	        while(tokenizer.hasMoreTokens())
-	        {
-	            String token=tokenizer.nextToken();
-	            if(operator.indexOf(token)<0)
-	                valueStack.push(token);
-	            else
-	                operatorStack.push(token);
-	            resolve(valueStack, operatorStack);
-	        }
-	        String lastOne=(String)valueStack.pop();
-	        return Double.parseDouble(lastOne);   
-	    }
+    {
+        expression=expression.replaceAll("[\t\n ]", "")+"=";
+        expression=brackets(expression);
+        if(expression.startsWith("-"))
+        	expression="0"+expression;
+        String operator="*/+-=";
+        StringTokenizer tokenizer=new StringTokenizer(expression, operator, true);
+        Stack<String> operatorStack=new Stack<String>();
+        Stack<String> valueStack=new Stack<String>();
+        while(tokenizer.hasMoreTokens())
+        {
+            String token=tokenizer.nextToken();
+            if(operator.indexOf(token)<0)
+                valueStack.push(token);
+            else
+                operatorStack.push(token);
+            resolve(valueStack, operatorStack);
+        }
+        String lastOne=(String)valueStack.pop();
+        return Double.parseDouble(lastOne);
+    }
 
     public int getPriority(String op)
     {
@@ -63,20 +63,20 @@ public class Infix {
     }
 
     public String getResults(String operand1, String operator, String operand2)
-	    {
-	        double op1=Double.parseDouble(operand1);
-	        double op2=Double.parseDouble(operand2);
-	        if(operator.equals("*"))
-	            return ""+(op1*op2);
-	        else if(operator.equals("/"))
-	            return ""+(op1/op2);
-	        else if(operator.equals("+"))
-	            return ""+(op1+op2);
-	        else if(operator.equals("-"))
-	            return ""+(op1-op2);
-	        else
-	            return null;
-	    }
+    {
+        double op1=Double.parseDouble(operand1);
+        double op2=Double.parseDouble(operand2);
+        if(operator.equals("*"))
+            return ""+(op1*op2);
+        else if(operator.equals("/"))
+            return ""+(op1/op2);
+        else if(operator.equals("+"))
+            return ""+(op1+op2);
+        else if(operator.equals("-"))
+            return ""+(op1-op2);
+        else
+            return null;
+    }
     
     public String brackets(String exp)
     {
@@ -88,11 +88,34 @@ public class Infix {
     					if(exp.charAt(j)=='(')
     					{
     						String in=exp.substring(j+1,i);
-    						in=""+infix(in);
+							in=""+infix(in);
     						exp=exp.substring(0,j)+in+exp.substring(i+1);
     						i=j=0;
     					}
+    	for(int i=0;i<exp.length();i++)
+    	{
+    		if(exp.charAt(i)=='-'&&exp.charAt(i+1)=='-')
+    			exp=exp.replace("--", "+");
+    		if(exp.charAt(i)=='+'&&exp.charAt(i+1)=='-')
+    			exp=exp.replace("+-", "-");
+    		if(exp.charAt(i)=='*'&&exp.charAt(i+1)=='-')
+    		{
+    			exp="-"+exp.replace("*-", "*");
+    			for(int j=0;j<exp.length();j++)
+    				if(j==0)
+    	    			if(exp.charAt(j)=='-'&&exp.charAt(j+1)=='-')
+    	        			exp=exp.replace("--", "");
+    		}
+    		if(exp.charAt(i)=='/'&&exp.charAt(i+1)=='-')
+    		{
+    			exp="-"+exp.replace("/-", "/");
+    			for(int j=0;j<exp.length();j++)
+    				if(j==0)
+    	    			if(exp.charAt(j)=='-'&&exp.charAt(j+1)=='-')
+    	        			exp=exp.replace("--", "");
+    		}
+    	}
     	return exp;
     }
-
+    
 }
